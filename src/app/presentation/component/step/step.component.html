@@ -1,0 +1,10 @@
+<ul class="steps">
+  <li class="step step-success" *ngFor="let step of datas; let index = index">
+    <div class="step-content"
+    [ngClass]="{'active' : currentIndex == index}"
+    [ngClass]="{'pass' : currentIndex > index}">
+      <span class="step-circle">{{ index + 1}}</span>
+      <span class="step-text">{{ step.name }}</span>
+    </div>
+  </li>
+</ul>

@@ -1,0 +1,196 @@
+<div class="container create-tax-filing">
+  <h1 class="text-center">Submit Tax Filing</h1>
+  <div style="margin: 32px">
+    <app-step [datas]="step" [currentIndex]="selectStep"></app-step>
+  </div>
+
+  <form [formGroup]="form" #formDir="ngForm" (ngSubmit)="submit(formDir)">
+    <div *ngIf="selectStep === 0" class="create-tax-filing-content">
+      <!-- Tax Filing Detail -->
+      <div class="create-tax-filing-section">
+        <h3>Tax Filing Detail</h3>
+        <hr />
+        <div class="form-selction">
+          <label class="form-label">Type of filing
+            <span class="text-danger">*</span>
+          </label>
+          <div class="row">
+            <div class="col-auto" *ngFor="let type of filingTypes"
+              [ngClass]="{ 'is-invalid': filingType?.errors && isShowVaildate }">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="filingType" formControlName="filingType"
+                  [value]="filingTypeSouece[type].value" (change)="calculateTax()" [ngClass]="{
+                    'is-invalid': filingType?.errors && isShowVaildate
+                  }" />
+                <label class="form-check-label" for="filingType">
+                  {{ filingTypeSouece[type].text }}
+                </label>
+              </div>
+            </div>
+            <div class="invalid-feedback">Invalid Data</div>
+          </div>
+        </div>
+
+        <div class="form-selction">
+          <label for="month" class="form-label">Tax Month
+            <span class="text-danger">*</span>
+          </label>
+          <div class="row">
+            <div class="col-12 col-sm-6 col-md-4">
+              <select class="form-select" name="month" formControlName="month"
+                [ngClass]="{ 'is-invalid': month?.errors && isShowVaildate }">
+                <option *ngFor="let month of months" [value]="month.value" [disabled]="month.disabled">
+                  {{ month.name }}
+                </option>
+              </select>
+              <div class="invalid-feedback">Invalid Data</div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+              <select class="form-select" name="year" formControlName="year"
+                [ngClass]="{ 'is-invalid': year?.errors && isShowVaildate }" (change)="onYearChange()">
+                <option *ngFor="let year of years" [value]="year">
+                  {{ year }}
+                </option>
+              </select>
+              <div class="invalid-feedback">Invalid Data</div>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </div>
+
+      <!-- Tax Computation -->
+      <div class="create-tax-filing-section">
+        <h3>Tax Computation</h3>
+        <hr />
+
+        <div class="section">
+          <h6>
+            Provide total value textable electornuc service
+            <span class="text-danger">*</span>
+          </h6>
+
+          <div class="row form-selction">
+            <div class="col-sm-7">
+              1. Total value of taxable electronic service exclusive of VAT
+            </div>
+            <div class="col-sm-5">
+              <input-number [attr.name]="'saleAmount'" [format]="'0.2-2'" [formControlName]="'saleAmount'"
+                [placeholder]="'THB'" [isInValid]="saleAmount?.invalid && isShowVaildate"
+                [invalidMessage]="'Invalid Data'" (blur)="calculateVat()">
+              </input-number>
+            </div>
+          </div>
+          <div class="row form-selction">
+            <div class="col-sm-7">2. Total VAT to be remitted(7% of 1.)</div>
+            <div class="col-sm-5">
+              <input-number [attr.name]="'taxAmount'" [format]="'0.2-2'" [formControlName]="'taxAmount'"
+                [placeholder]="'THB'" [isInValid]="taxAmount?.invalid && isShowVaildate"
+                [invalidMessage]="'Invalid Data'" (blur)="calculateTax()"></input-number>
+            </div>
+          </div>
+        </div>
+
+        <!-- TaxFilingType Additional -->
+        <div *ngIf="filingType?.value === TaxFilingType.Additional" class="section">
+          <h6>In Case of Late Filing and Payment, or additional filing</h6>
+          <div class="row form-selction">
+            <div class="col-sm-7">3. Surchang</div>
+            <div class="col-sm-5">
+              <input-number name="surcharge" formControlName="surcharge" format="0.2-2" class="text-end"
+                placeholder="THB" [readonly]="true"></input-number>
+            </div>
+          </div>
+          <div class="row form-selction">
+            <div class="col-sm-7">4. Penalty</div>
+            <div class="col-sm-5">
+              <input-number name="penalty" formControlName="penalty" format="0.2-2" class="text-end" placeholder="THB"
+                [readonly]="true"></input-number>
+            </div>
+          </div>
+          <div class="row form-selction">
+            <div class="col-sm-7">
+              5. Total amount of VAT, surcharge, and penalty to be remitted
+              (2.+3.+4.)
+            </div>
+            <div class="col-sm-5">
+              <input-number name="totalAmount" formControlName="totalAmount" format="0.2-2" class="text-end"
+                placeholder="THB" [readonly]="true"></input-number>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review  -->
+    <div *ngIf="selectStep === 1 && taxData" class="create-tax-filing-content">
+      <div class="create-tax-filing-section">
+        <h3>Tax Filing Detail</h3>
+        <hr />
+        <table class="table-tax-detail">
+          <tr >
+            <td>Type of filing</td>
+            <td>{{ filingTypeSouece[taxData.filingType].text }}</td>
+          </tr>
+          <tr>
+            <td>VAT Month</td>
+            <td>{{ taxData.month | month : 1 }} {{ taxData.year }}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="create-tax-filing-section">
+        <h3>Tax Computation</h3>
+        <hr />
+        <div>
+          <table class="table-tax-computation">
+            <tr>
+              <td>
+                <strong>Total value of taxable electronic service exclusive of
+                  VAT</strong>
+              </td>
+              <td class="text-end">
+                {{ taxData?.saleAmount || 0 | number : "0.2-2" }} THB
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="m-0"><strong>Total VAT to be remitted</strong></p>
+                <small>(7% of total value of taxable electronic service exclusive of
+                  VAT)</small>
+              </td>
+              <td class="text-end">
+                <p>{{ taxData?.taxAmount || 0 | number : "0.2-2" }} THB</p>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Total Amount Payable</strong></td>
+              <td class="text-end">
+                <strong>{{ taxData?.totalAmount || 0 | number : "0.2-2" }} THB</strong>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="create-tax-filing-section">
+        <h3>Declaration</h3>
+        <hr />
+        <div>
+          I hereby certify that information given above are true and correct and
+          agree to be bound by such information.
+        </div>
+      </div>
+    </div>
+
+    <div class="create-tax-filing-footer" *ngIf="selectStep === 0">
+      <button type="button" class="btn btn-outline-secondary" (click)="onBackStep()">
+        Back
+      </button>
+      <button type="submit" class="btn btn-primary">Next</button>
+    </div>
+    <div *ngIf="selectStep === 1" class="create-tax-filing-footer-confirm" (click)="onShowDetail()">
+      <button type="button" class="btn btn-primary">Confirm and Submit</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,81 @@
+.steps {
+  padding: 0;
+  margin: auto;
+  list-style: none;
+  display: flex;
+  overflow-x: auto;
+
+  .step {
+    position: relative;
+    width: 100%;
+    padding: 0px 12px;
+    max-width: 180px;
+
+    &:not(:first-child)::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 12px;
+      left: -2px;
+      width: 50%;
+      height: 2px;
+      color: #adb5bd;
+      background-color: currentColor;
+    }
+    &:not(:last-child)::after {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 12px;
+      right: 0px;
+      width: 50%;
+      height: 2px;
+      color: #adb5bd;
+      background-color: currentColor;
+    }
+  }
+
+  .step:first-child {
+    margin-left: auto;
+  }
+
+  .step:last-child {
+    margin-right: auto;
+  }
+
+  .step:last-child {
+    margin-right: auto;
+  }
+
+  .step-content {
+    box-sizing: content-box;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    &.pass {
+      .step-circle {
+        background-color: black;
+        color: #fff;
+      }
+    }
+  }
+
+  .step-circle {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    border: 1px solid #000;
+    border-radius: 100%;
+    background-color: #fff;
+    z-index: 1;
+  }
+
+  .step-text {
+    word-break: break-all;
+    margin-top: 8px;
+  }
+}

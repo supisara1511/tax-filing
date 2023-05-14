@@ -1,0 +1,68 @@
+.create-tax-filing {
+  padding-top: 36px;
+
+  table {
+    &.table-tax-computation {
+      width: 100%;
+      td {
+        padding: 16px 0px;
+      }
+
+      strong {
+        font-weight: 600;
+      }
+    }
+    &.table-tax-detail {
+      width: auto;
+
+      td {
+        padding: 4px 16px;
+
+        &:first-child {
+          padding-left: 0px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.create-tax-filing-content {
+  border: 1px solid #000;
+  padding: 40px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+
+  .create-tax-filing-section {
+    .section {
+    }
+  }
+
+  .section {
+    + .section {
+      margin-top: 32px;
+    }
+  }
+
+  .form-selction {
+    & + .form-selction {
+      margin-top: 16px;
+    }
+  }
+}
+
+.create-tax-filing-footer {
+  display: flex;
+  gap: 16px;
+  margin: 32px 0px;
+}
+
+.create-tax-filing-footer-confirm {
+  display: flex;
+  gap: 16px;
+  margin: 32px 0px;
+  justify-content: center;
+  align-items: center;
+}

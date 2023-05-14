@@ -1,0 +1,8 @@
+<input #inputElement [type]="type"  class="form-control text-end {{cssClass}}"
+[ngClass]="{'is-invalid': isInValid}"
+(ngModelChange)="onModelChange($event)"
+
+[ngModel]="displayValue" [readonly]="readonly" [disabled]="disabled || readonly" [placeholder]="placeholder">
+<div *ngIf="invalidMessage" class="invalid-feedback">
+  {{ invalidMessage }}
+</div>
